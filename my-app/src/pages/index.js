@@ -1,7 +1,10 @@
 import Head from "next/head";
 import Image from "next/image";
+import Anchor from "./components/Anchor";
+import { useLayoutEffect } from "react";
 
-export default function Home() {
+export default function Home({ data }) {
+  console.table(data);
   return (
     <>
       <Head>
@@ -10,8 +13,32 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <main>
-        <h1>Hello world</h1>
+        <h1>All the products!</h1>
+        <section className="productsContainer">
+          {data.map((product) => (
+            <article>
+              <ul>
+                <li>
+                  <Anchor href={`/products/${product.id}`}>{product.productdisplayname}</Anchor>
+                </li>
+              </ul>
+            </article>
+          ))}
+        </section>
       </main>
     </>
   );
+}
+
+export async function getStaticProps(context) {
+  const api = "https://kea-alt-del.dk/t7/api/products/";
+  const res = await fetch(api);
+  const data = await res.json();
+  console.log(data);
+
+  return {
+    props: {
+      data: data,
+    },
+  };
 }
